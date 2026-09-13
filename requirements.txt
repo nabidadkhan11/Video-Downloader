@@ -1,0 +1,10 @@
+Flask==3.0.3
+# TikTok / Instagram / X / Facebook extractors break often and get fixed
+# in new yt-dlp releases far more frequently than YouTube's. If only
+# YouTube works for you, your yt-dlp is stale — run:
+#   pip install -U yt-dlp
+yt-dlp>=2025.1.1
+
+# Production WSGI server (used by Procfile / Dockerfile). Not needed for
+# local development with `python app.py`.
+gunicorn==23.0.0
