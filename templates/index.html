@@ -1,1 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidLink — Free Video Downloader for YouTube, TikTok, Instagram, Facebook & X</title>
+<meta name="description" content="Download videos from YouTube, TikTok, Instagram, Facebook and X (Twitter) in HD — up to 1080p, no watermark, no signup. 100% free online video downloader.">
+<meta name="keywords" content="video downloader, youtube downloader, tiktok downloader, instagram video downloader, facebook video downloader, twitter video downloader, download video without watermark, mp3 downloader">
+<meta name="robots" content="index, follow">
+<meta name="author" content="VidLink">
+<meta name="theme-color" content="#ff5a2b">
+<link rel="canonical" href="{{ request.url_root }}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23ff5a2b'/%3E%3Cpath d='M12 5v9m0 0-3.2-3.2M12 14l3.2-3.2M6 18h12' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
+<!-- To index this site: verify it in Google Search Console and Bing
+     Webmaster Tools, then paste the verification tag each gives you
+     here, e.g.:
+     <meta name="google-site-verification" content="PASTE_CODE_HERE"> -->
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VidLink">
+<meta property="og:title" content="VidLink — Free Video Downloader for YouTube, TikTok, Instagram, Facebook & X">
+<meta property="og:description" content="Fast, free HD video downloads with no watermark and no signup. Supports YouTube, TikTok, Instagram, Facebook and X (Twitter).">
+<meta property="og:url" content="{{ request.url_root }}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VidLink — Free Video Downloader">
+<meta name="twitter:description" content="Fast, free HD video downloads with no watermark and no signup. Supports YouTube, TikTok, Instagram, Facebook and X (Twitter).">
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "VidLink",
+  "url": "{{ request.url_root }}",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any (web-based)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Free online video downloader for YouTube, TikTok, Instagram, Facebook and X (Twitter). No watermark, no signup, up to 1080p HD."
+}
+</script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="brand" aria-label="VidLink Home" data-tab="home">
+        <span class="brand-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></span>
+        <span class="brand-text">
+          <span class="brand-name">Vid<span class="brand-name-accent">Link</span></span>
+          <span class="brand-tag">Download Videos, Anywhere</span>
+        </span>
+      </button>
+
+      <nav class="nav-links">
+        <button class="nav-link active" data-tab="home">Home</button>
+        <button class="nav-link" data-tab="history">History</button>
+        <button class="nav-link" data-tab="about">About</button>
+      </nav>
+
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">
+          <span id="themeIcon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.6A9 9 0 1 1 11.4 3a7 7 0 0 0 9.6 9.6Z"/></svg></span>
+        </button>
+        <span class="pill-badge">Fast &bull; Free &bull; No Watermark</span>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MOBILE DRAWER ============ -->
+  <div class="drawer-backdrop hidden" id="drawerBackdrop"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-head">
+      <span class="brand-name">Vid<span class="brand-name-accent">Link</span></span>
+      <button class="icon-btn" id="drawerCloseBtn" aria-label="Close menu">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+      </button>
+    </div>
+    <nav class="drawer-nav">
+      <button class="drawer-link active" data-tab="home"><span><svg class="icon" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></span> Home</button>
+      <button class="drawer-link" data-tab="history"><span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span> History</button>
+      <button class="drawer-link" data-tab="about"><span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="7.5" x2="12" y2="7.51"/></svg></span> About</button>
+    </nav>
+    <div class="drawer-divider"></div>
+    <div class="drawer-foot">VidLink &copy; <span id="drawerYear"></span></div>
+  </aside>
+
+  {% if not ffmpeg_available %}
+  <div class="ffmpeg-warning">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 3 22 20H2L12 3Z"/><line x1="12" y1="9" x2="12" y2="14"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg> <strong>FFmpeg not found!</strong> High quality video (720p/1080p) and MP3 downloads
+    won't work until FFmpeg is installed. See README.md for install steps.
+  </div>
+  {% endif %}
+
+  <main class="main">
+
+    <!-- ============ HOME TAB ============ -->
+    <section class="tab-panel" id="tab-home">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="badge-pill"><svg class="icon" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg> All in One Video Downloader</span>
+          <h1>Download Videos from<br><span class="grad-text">Your Favorite Platforms</span></h1>
+          <p class="hero-desc">Fast, simple and free. Paste the video link from YouTube, TikTok, Instagram, Facebook, X and download it in your preferred quality.</p>
+
+          <div class="platform-row">
+            <button class="platform-chip" data-platform="youtube"><span class="p-icon yt">&#9654;</span>YouTube</button>
+            <button class="platform-chip" data-platform="tiktok"><span class="p-icon tt">&#9835;</span>TikTok</button>
+            <button class="platform-chip" data-platform="instagram"><span class="p-icon ig">&#9673;</span>Instagram</button>
+            <button class="platform-chip" data-platform="facebook"><span class="p-icon fb">f</span>Facebook</button>
+            <button class="platform-chip" data-platform="twitter"><span class="p-icon xx">&#120143;</span>X (Twitter)</button>
+          </div>
+
+          <div class="input-card">
+            <span class="input-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.6 5A4 4 0 0 1 18 10.4l-1.5 1.6"/><path d="M13 17.5 11.4 19A4 4 0 0 1 6 13.6l1.5-1.6"/></svg></span>
+            <input type="text" id="urlInput" placeholder="Paste video link here...">
+            <button id="checkBtn" class="btn-primary"><span class="btn-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></span> Download</button>
+          </div>
+
+          <div class="hero-meta-row">
+            <span class="example-text">Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ</span>
+            <button class="link-btn" id="supportedBtn"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="7.5" x2="12" y2="7.51"/></svg> Supported Platforms</button>
+          </div>
+
+          <div id="statusMsg" class="status"></div>
+
+          <div class="no-watermark-row">
+            <span class="nw-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3 5 6v5.5C5 16 8 19.5 12 21c4-1.5 7-5 7-9.5V6l-7-3Z"/></svg></span>
+            <div class="nw-text">
+              <strong>No Watermark</strong>
+              <span>Clean, original quality</span>
+            </div>
+            <span class="nw-chevron">&#8250;</span>
+          </div>
+        </div>
+
+        <div class="hero-preview">
+          <div class="preview-card" id="previewCard">
+            <div class="preview-plat" id="previewPlat">
+              <span class="p-icon yt" id="previewPlatIcon">&#9654;</span>
+              <span id="previewPlatLabel">YouTube</span>
+            </div>
+            <div class="preview-thumb-wrap">
+              <img src="" alt="" id="previewThumb" class="preview-thumb hidden">
+              <div class="thumb-fallback" id="thumbFallback"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="7" y1="4" x2="7" y2="9"/><line x1="12" y1="4" x2="12" y2="9"/><line x1="17" y1="4" x2="17" y2="9"/></svg></div>
+              <span class="thumb-duration hidden" id="thumbDuration"></span>
+            </div>
+            <div class="preview-title" id="previewTitle">Paste a link above to preview your video here</div>
+            <div class="preview-sub hidden" id="previewSub"></div>
+
+            <div class="detect-steps hidden" id="detectSteps">
+              <p class="detect-heading">Detecting video info...</p>
+              <div class="detect-step" data-step="fetch"><span class="ds-dot">&#9675;</span> Fetching video details</div>
+              <div class="detect-step" data-step="qualities"><span class="ds-dot">&#9675;</span> Getting available qualities</div>
+              <div class="detect-step" data-step="prep"><span class="ds-dot">&#9675;</span> Preparing download options...</div>
+            </div>
+          </div>
+
+          <div class="options-card hidden" id="optionsCard">
+            <div class="options-head"><span><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></span> Download Options</div>
+            <div class="options-list" id="qualityButtons"></div>
+            <button class="btn-primary btn-block" id="primaryDownloadBtn"><span class="btn-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></span> Download</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="section-kicker">Why VidLink</span>
+        <h2>Built to make downloading effortless</h2>
+      </div>
+      <div class="features-strip">
+        <div class="feature-item">
+          <div class="feature-item-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
+          <h3>Fast &amp; Reliable</h3>
+          <p>Get your videos in seconds with our optimized servers.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3 5 6v5.5C5 16 8 19.5 12 21c4-1.5 7-5 7-9.5V6l-7-3Z"/></svg></div>
+          <h3>No Watermark</h3>
+          <p>Clean downloads, no logo, no watermark.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-ic feature-item-ic-text">HD</div>
+          <h3>High Quality</h3>
+          <p>Choose from multiple resolutions up to 1080p, 4K (where available).</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-ic"><svg class="icon" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
+          <h3>Multiple Platforms</h3>
+          <p>Supports YouTube, TikTok, Instagram, Facebook and X.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-item-ic"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+          <h3>100% Free</h3>
+          <p>No registration, no hidden fees. Just download.</p>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span class="section-kicker">Process</span>
+        <h2>How It Works</h2>
+        <p class="hiw-sub">Download your favorite videos in just 3 simple steps.</p>
+      </div>
+      <div class="hiw-timeline">
+        <div class="hiw-step">
+          <div class="hiw-circle">1</div>
+          <div class="hiw-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.6 5A4 4 0 0 1 18 10.4l-1.5 1.6"/><path d="M13 17.5 11.4 19A4 4 0 0 1 6 13.6l1.5-1.6"/></svg></div>
+          <h4>Paste the Link</h4>
+          <p>Copy the video URL from your favorite platform and paste it in the input box.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-circle">2</div>
+          <div class="hiw-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M19.4 13a7.97 7.97 0 0 0 0-2l2.1-1.6-2-3.4-2.5 1a8 8 0 0 0-1.7-1L15 3h-4l-.3 2.6a8 8 0 0 0-1.7 1l-2.5-1-2 3.4L6.6 11a7.97 7.97 0 0 0 0 2l-2.1 1.6 2 3.4 2.5-1a8 8 0 0 0 1.7 1L11 21h4l.3-2.6a8 8 0 0 0 1.7-1l2.5 1 2-3.4L19.4 13Z"/></svg></div>
+          <h4>Choose Quality</h4>
+          <p>Select your preferred video or audio quality.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-circle">3</div>
+          <div class="hiw-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></div>
+          <h4>Download</h4>
+          <p>Click the download button and your file will be saved to your device.</p>
+        </div>
+      </div>
+
+      <!-- ============ STATS SECTION ============ -->
+      <div class="stats-section">
+        <div class="stat-block">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Platforms Supported</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">1080p</span>
+          <span class="stat-label">Max HD Quality</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">0</span>
+          <span class="stat-label">Watermarks Added</span>
+        </div>
+        <div class="stat-block">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Free, No Signup</span>
+        </div>
+      </div>
+
+      <!-- ============ FAQ SECTION ============ -->
+      <div class="section-head">
+        <span class="section-kicker">FAQ</span>
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>Is VidLink really free to use?<span class="faq-chevron">&#8250;</span></summary>
+          <div class="faq-answer"><p>Yes. There's no registration, no subscription and no hidden fee — just paste a link and download.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Will the video have a watermark?<span class="faq-chevron">&#8250;</span></summary>
+          <div class="faq-answer"><p>No. Every download is the original, clean file with no added logo or watermark.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Which platforms are supported?<span class="faq-chevron">&#8250;</span></summary>
+          <div class="faq-answer"><p>YouTube, TikTok, Instagram, Facebook and X (Twitter) links all work out of the box.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Where do my downloaded files go?<span class="faq-chevron">&#8250;</span></summary>
+          <div class="faq-answer"><p>Straight to your device's normal downloads location — nothing is stored on our servers. Your download history is kept only in this browser on your device.</p></div>
+        </details>
+      </div>
+
+      <!-- ============ CTA SECTION ============ -->
+      <div class="cta-section">
+        <h2>Ready to download your favorite videos?</h2>
+        <p>Paste a link above and get your file in seconds — completely free.</p>
+        <button class="btn-primary" id="ctaBtn"><span class="btn-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 21h16"/></svg></span> Get Started — It's Free</button>
+      </div>
+
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is VidLink really free to use?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. There's no registration, no subscription and no hidden fee — just paste a link and download." }
+          },
+          {
+            "@type": "Question",
+            "name": "Will the video have a watermark?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No. Every download is the original, clean file with no added logo or watermark." }
+          },
+          {
+            "@type": "Question",
+            "name": "Which platforms are supported?",
+            "acceptedAnswer": { "@type": "Answer", "text": "YouTube, TikTok, Instagram, Facebook and X (Twitter) links all work out of the box." }
+          },
+          {
+            "@type": "Question",
+            "name": "Where do my downloaded files go?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Straight to your device's normal downloads location — nothing is stored on our servers. Your download history is kept only in this browser on your device." }
+          }
+        ]
+      }
+      </script>
+    </section>
+
+    <!-- ============ HISTORY TAB ============ -->
+    <section class="tab-panel hidden" id="tab-history">
+      <div class="panel-card">
+        <div class="panel-head">
+          <h2>Download History</h2>
+          <button class="text-danger-btn" id="clearHistoryBtn">Clear All</button>
+        </div>
+        <p class="panel-note">Saved only on this device — you can redownload anything from here anytime.</p>
+        <div class="list-container" id="historyList"></div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT TAB ============ -->
+    <section class="tab-panel hidden" id="tab-about">
+      <div class="panel-card about-card">
+        <h2>About the Developer</h2>
+        <p class="about-text">Hi, I'm <strong>Your Name</strong> — the developer behind VidLink. I built this tool to make saving videos from your favorite platforms quick, simple and free, without pop-ups, watermarks or sign-ups getting in the way.</p>
+        <p class="about-text">I enjoy building small, focused web tools like this one. Feel free to connect with me below, share feedback, or reach out if you'd like to collaborate.</p>
+
+        <div class="notice-box">
+          <span class="notice-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3 22 20H2L12 3Z"/><line x1="12" y1="9" x2="12" y2="14"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg></span>
+          <div>
+            <strong>Usage &amp; Copyright Notice</strong>
+            <p>VidLink is built for downloading content you own or have explicit permission to save — for example your own uploads, backups, or content licensed for offline use. It is not intended for downloading or redistributing copyrighted material without the rights holder's consent. Downloading from platforms like YouTube, Instagram, TikTok, Facebook or X may conflict with their individual Terms of Service, and responsibility for how this tool is used rests with the person using it, not with the developer.</p>
+          </div>
+        </div>
+
+        <h3 class="about-heading">Connect With Me</h3>
+        <div class="social-links">
+          <a href="#" class="social-link" target="_blank" rel="noopener">
+            <span class="social-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.15-1.11-1.46-1.11-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.9-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></span>
+            GitHub
+          </a>
+          <a href="#" class="social-link" target="_blank" rel="noopener">
+            <span class="social-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16v16H4V4Z"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-3.5a1.5 1.5 0 0 1 3 0V16"/><path d="M12 11v5"/></svg></span>
+            LinkedIn
+          </a>
+          <a href="#" class="social-link" target="_blank" rel="noopener">
+            <span class="social-ic"><svg class="icon" viewBox="0 0 24 24"><path d="m4 4 7.5 9.5L4.5 20H7l5.2-5.9L17 20h3l-7.8-9.9L19.5 4H17l-4.8 5.4L8 4H4Z"/></svg></span>
+            X (Twitter)
+          </a>
+          <a href="#" class="social-link" target="_blank" rel="noopener">
+            <span class="social-ic"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.51"/></svg></span>
+            Instagram
+          </a>
+          <a href="mailto:you@example.com" class="social-link">
+            <span class="social-ic"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+            Email
+          </a>
+        </div>
+        <p class="about-text muted">Replace the placeholder name, bio and links above with your own before publishing.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col footer-brand-col">
+        <span class="brand-name">Vid<span class="brand-name-accent">Link</span></span>
+        <p>Fast, free video downloads from all your favorite platforms — no watermark, no signup.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <button class="footer-link" data-tab="home">Home</button>
+        <button class="footer-link" data-tab="history">History</button>
+        <button class="footer-link" data-tab="about">About</button>
+      </div>
+      <div class="footer-col">
+        <h4>Supported Platforms</h4>
+        <span class="footer-text">YouTube</span>
+        <span class="footer-text">TikTok</span>
+        <span class="footer-text">Instagram</span>
+        <span class="footer-text">Facebook</span>
+        <span class="footer-text">X (Twitter)</span>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a class="footer-link" href="#" target="_blank" rel="noopener">GitHub</a>
+        <a class="footer-link" href="#" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="footer-link" href="#" target="_blank" rel="noopener">X (Twitter)</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footerYear"></span> VidLink. All rights reserved.</span>
+      <span>For content you own or have permission to use only — see <button class="footer-inline-link" data-tab="about">Usage &amp; Copyright Notice</button>.</span>
+    </div>
+  </footer>
+
+  <!-- ============ BOTTOM NAV (mobile) ============ -->
+  <nav class="bottom-nav">
+    <button class="bn-item active" data-tab="home">
+      <span class="bn-ic"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></span>
+      Home
+    </button>
+    <button class="bn-item" data-tab="history">
+      <span class="bn-ic"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+      History
+    </button>
+    <button class="bn-item" data-tab="about">
+      <span class="bn-ic"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="7.5" x2="12" y2="7.51"/></svg></span>
+      About
+    </button>
+  </nav>
+
+  <!-- ============ DOWNLOADING OVERLAY ============ -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="overlay-card">
+      <button class="overlay-back hidden" id="loadingBackBtn">&#8249;</button>
+      <h3 class="overlay-title">Downloading</h3>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-top">
+          <span class="progress-bar-label" id="loadingText">Downloading video&hellip;</span>
+          <span class="progress-bar-pct"><span id="progressPercent">0</span>%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="ringFill"></div>
+        </div>
+      </div>
+
+      <p class="loading-sub" id="loadingSub"></p>
+
+      <div class="loading-stats">
+        <div class="stat-row"><span><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12 16 8"/><line x1="12" y1="5" x2="12" y2="6"/><line x1="19" y1="12" x2="18" y2="12"/><line x1="5" y1="12" x2="6" y2="12"/></svg> Speed</span><span id="progressSpeed">&hellip;</span></div>
+        <div class="stat-row"><span><svg class="icon" viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3c0 4 3 5.5 4 6.5 1-1 4-2.5 4-6.5M8 21c0-4 3-5.5 4-6.5 1 1 4 2.5 4 6.5"/></svg> Time remaining</span><span id="progressEta">&hellip;</span></div>
+        <div class="stat-row"><span><svg class="icon" viewBox="0 0 24 24"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg> Quality</span><span id="progressQualityLabel">&mdash;</span></div>
+      </div>
+
+      <button class="btn-secondary btn-block" id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ============ DONE OVERLAY ============ -->
+  <div id="doneOverlay" class="loading-overlay hidden">
+    <div class="overlay-card">
+      <div class="done-check"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6"/></svg></div>
+      <h3 class="overlay-title">Download Complete!</h3>
+      <p class="loading-sub">Your file has been saved to your device.</p>
+
+      <div class="done-file-card">
+        <img src="" alt="" id="doneThumb" class="done-thumb hidden">
+        <div class="thumb-fallback done-fallback hidden" id="doneThumbFallback"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="7" y1="4" x2="7" y2="9"/><line x1="12" y1="4" x2="12" y2="9"/><line x1="17" y1="4" x2="17" y2="9"/></svg></div>
+        <div class="done-file-text">
+          <strong id="doneFilename">file.mp4</strong>
+          <span id="doneFileMeta">&mdash;</span>
+        </div>
+      </div>
+
+      <button class="btn-primary btn-block" id="doneCloseBtn">Done</button>
+      <button class="btn-secondary btn-block" id="downloadAnotherBtn">+ Download Another</button>
+    </div>
+  </div>
+
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
